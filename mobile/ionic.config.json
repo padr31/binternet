@@ -1,5 +1,7 @@
 {
   "name": "binternet",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
