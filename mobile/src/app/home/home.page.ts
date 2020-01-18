@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { NativeGeocoder,NativeGeocoderOptions} from '@ionic-native/native-geocoder/ngx';
+import { NativeGeocoder,NativeGeocoderOptions,NativeGeocoderResult} from '@ionic-native/native-geocoder/ngx';
  
 import { LoadingController, AlertController, Platform } from '@ionic/angular';
 import {
@@ -13,7 +13,8 @@ import {
   MarkerOptions,
   GoogleMapsAnimation,
   MyLocation,
-  CameraPosition
+  CameraPosition,
+  HtmlInfoWindow
 } from "@ionic-native/google-maps";
 
 @Component({
@@ -25,6 +26,8 @@ export class HomePage {
 
   geoLatitude: number;
   geoLongitude: number;
+  geoLocationLat: any;
+  geoLocationLng: any;
   geoAccuracy:number;
   geoAddress: string;
   map: GoogleMap;
@@ -35,12 +38,11 @@ export class HomePage {
     maxResults: 5
   };
   constructor(
-    private geolocation: Geolocation,
+    // private geolocation: Geolocation,
     private platform: Platform,
     public loadingController: LoadingController,
-    private nativeGeocoder: NativeGeocoder,
+    // private nativeGeocoder: NativeGeocoder,
   ) {
-    
   }
 
   async ngOnInit() {
@@ -78,6 +80,8 @@ export class HomePage {
 
   async getLocation(){
 
+    this.setDefaultMarkers();
+
     // Get my current location
     this.map.getMyLocation().then((location: MyLocation) => {
 
@@ -99,24 +103,85 @@ export class HomePage {
       this.loading.dismiss();
     });
   }
-/*getGeolocation(){
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.geoLatitude = resp.coords.latitude;
-      this.geoLongitude = resp.coords.longitude; 
-      this.geoAccuracy = resp.coords.accuracy; 
-      this.getGeoencoder(this.geoLatitude,this.geoLongitude);
-     }).catch((error) => {
-       alert('Error getting location'+ JSON.stringify(error));
-     });
+
+  setDefaultMarkers() {
+    let ls = window.localStorage;
+    let arr = JSON.parse(ls.getItem('markers'));
+
+    let htmlInfoWindow = new HtmlInfoWindow();
+
+    let frame: HTMLElement = document.createElement('div');
+    frame.innerHTML = [
+      '<h3>Amazing trash!</h3>',
+    ].join("");
+   
+    htmlInfoWindow.setContent(frame, {width: "250px", height: "100px"});
+    
+    arr.map(marker => {
+      const { lat, lng } = marker;
+      let myMarker: Marker  = this.map.addMarkerSync({
+        //title: 'This is an amazing trash',
+        position: {
+          lat,
+          lng
+        },
+        icon: {
+          url: 'assets/icon/trash.png',
+          size: {
+            width: 32,
+            height: 32
+          }
+        }
+      });
+       myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+         htmlInfoWindow.open(myMarker);
+       });
+    
+    });
   }
 
-  getGeoencoder(latitude,longitude){
-    this.nativeGeocoder.reverseGeocode(latitude, longitude, this.geoencoderOptions)
-    .then((result: NativeGeocoderReverseResult[]) => {
-      this.geoAddress = this.generateAddress(result[0]);
-    })
-    .catch((error: any) => {
-      alert('Error getting location'+ JSON.stringify(error));
-    });
-  }*/
+  // addMarker() {
+  //   let target = this.map.getCameraTarget();
+  //   this.geoLocationLat = target.lat;
+  //   this.geoLocationLng = target.lng;
+
+  //   this.map.addMarker({
+  //       position: {
+  //         lat: this.geoLocationLat,
+  //         lng: this.geoLocationLng
+  //       },
+  //       icon: this.markerIcon
+  //   });
+
+
+    // let ls = window.localStorage;
+    // let arr = []
+    // if(!ls.getItem('markers')) {
+    //   arr = [{lat: this.geoLocationLat, lng: this.geoLocationLng}]
+    // } else {
+    //   arr = [ ...JSON.parse(ls.getItem('markers')), {lat: this.geoLocationLat, lng: this.geoLocationLng}]
+    // }
+    // ls.setItem('markers', JSON.stringify(arr))
+    // alert(ls.getItem('markers'))
+  // }
 }
+  // getGeolocation(){
+  //   this.geolocation.getCurrentPosition().then((resp) => {
+  //     this.geoLatitude = resp.coords.latitude;
+  //     this.geoLongitude = resp.coords.longitude; 
+  //     this.geoAccuracy = resp.coords.accuracy; 
+  //     this.getGeoencoder(this.geoLatitude,this.geoLongitude);
+  //    }).catch((error) => {
+  //      alert('Error getting location'+ JSON.stringify(error));
+  //    });
+  // }
+
+  // getGeoencoder(latitude,longitude){
+  //   this.nativeGeocoder.reverseGeocode(latitude, longitude, this.geoencoderOptions)
+  //   .then((result: NativeGeocoderResult[]) => {
+  //     this.geoAddress = this.generateAddress(result[0]);
+  //   })
+  //   .catch((error: any) => {
+  //     alert('Error getting location'+ JSON.stringify(error));
+  //   });
+  // }
