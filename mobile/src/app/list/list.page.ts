@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 //import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
 
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-list',
@@ -11,6 +12,7 @@ import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-sca
 export class ListPage implements OnInit {
   private selectedItem: any;
   scannedData: any;
+  scannedTrashData: any;
   encodedData: '';
   encodeData: any;
 
@@ -26,9 +28,10 @@ export class ListPage implements OnInit {
     'bluetooth',
     'build'
   ];
+
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
-    public barcodeCtrl: BarcodeScanner
+    public barcodeCtrl: BarcodeScanner,
    // private qrScanner: QRScanner
   ) {
     for (let i = 1; i < 11; i++) {
@@ -52,40 +55,43 @@ export class ListPage implements OnInit {
       torchOn: false,
       prompt: 'Place a barcode inside the scan area',
       resultDisplayDuration: 500,
-      formats: 'QR_CODE,PDF_417',
-      orientation: 'landscape',
+      formats: 'EAN_8,EAN_13,PDF_417',
+      orientation: 'portrait',
     };
 
     this.barcodeCtrl.scan(options).then(barcodeData => {
-      console.log('Barcode data', barcodeData);
-      this.scannedData = barcodeData;
-      alert(JSON.stringify(this.scannedData));
-
+      this.scannedTrashData = barcodeData
+      // this.http.get(`http://pavoldrotar.com:5000/barcodes?barcode=${barcodeData}`)
+      // .subscribe(data => {
+      //   alert("PROBABLY HERE")
+      //   alert(JSON.stringify(data))
+      // })
+      this.checkMatch();
     }).catch(err => {
       console.log('Error', err);
     });
   }
+
   scanBin() {
     const options: BarcodeScannerOptions = {
       preferFrontCamera: false,
       showFlipCameraButton: true,
       showTorchButton: true,
       torchOn: false,
-      prompt: 'Place a barcode inside the scan area',
+      prompt: 'Place a QR code inside the scan area',
       resultDisplayDuration: 500,
-      formats: 'EAN_8,EAN_13,PDF_417',
-      orientation: 'landscape',
+      formats: 'QR_CODE,PDF_417',
+      orientation: 'portrait',
     };
 
     this.barcodeCtrl.scan(options).then(barcodeData => {
-      console.log('Barcode data', barcodeData);
-      this.scannedData = barcodeData;
-      alert(JSON.stringify(this.scannedData));
-
+      this.scannedData = barcodeData
+      this.checkMatch();
     }).catch(err => {
       console.log('Error', err);
     });
-   /* this.qrScanner.prepare()
+
+    /* this.qrScanner.prepare()
     .then((status: QRScannerStatus) => {
       if (status.authorized) {
         // camera permission was granted
@@ -108,8 +114,19 @@ export class ListPage implements OnInit {
       }
     })
     .catch((e: any) => console.log('Error is', e));*/
-    
+
   }
+
+  checkMatch = () => {
+    if(!this.scannedData || !this.scannedTrashData) return;
+
+    Swal.fire({
+      title: 'Done!',
+      text: `You scanned ${this.scannedData}`,
+      icon: 'error'
+    })
+  }
+
   // add back when alpha.4 is out
   // navigate(item) {
   //   this.router.navigate(['/list', JSON.stringify(item)]);

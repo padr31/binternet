@@ -18,4 +18,8 @@
       You navigated here from <b>{{selectedItem.title }}</b>
     </div>
   -->
+
+  <div *ngIf="scannedData">
+    You scanned {{scannedData.text}}
+  </div>
 </ion-content>
