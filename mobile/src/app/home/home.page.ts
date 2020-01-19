@@ -106,7 +106,7 @@ export class HomePage {
 
   setDefaultMarkers() {
     let ls = window.localStorage;
-    let arr = JSON.parse(ls.getItem('markers'));
+    let arr = [{"lat":52.20506323635333,"lng":0.1201924681663513},{"lat":52.20548978938501,"lng":0.11858213692903519},{"lat":52.204643459791335,"lng":0.11828273534774782},{"lat":52.20623686373032,"lng":0.11941663920879363},{"lat":52.20379403194475,"lng":0.12135755270719527},{"lat":52.20324561429087,"lng":0.11907096952199936}]
 
     let htmlInfoWindow = new HtmlInfoWindow();
 
@@ -117,7 +117,7 @@ export class HomePage {
    
     htmlInfoWindow.setContent(frame, {width: "250px", height: "100px"});
     
-    [].map(marker => {
+    arr.map(marker => {
       const { lat, lng } = marker;
       let myMarker: Marker  = this.map.addMarkerSync({
         //title: 'This is an amazing trash',

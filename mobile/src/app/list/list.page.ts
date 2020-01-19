@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 //import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
+import { HttpClient } from '@angular/common/http';
 
 import Swal from 'sweetalert2'
 
@@ -32,6 +33,7 @@ export class ListPage implements OnInit {
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
     public barcodeCtrl: BarcodeScanner,
+    public http: HttpClient
    // private qrScanner: QRScanner
   ) {
     for (let i = 1; i < 11; i++) {
@@ -41,6 +43,8 @@ export class ListPage implements OnInit {
         icon: this.icons[Math.floor(Math.random() * this.icons.length)]
       });
     }
+
+    this.http.get('http://pavoldrotar.com:5000/barcodes').subscribe(data => alert(JSON.stringify(data)))
   }
 
   ngOnInit() {
@@ -61,11 +65,11 @@ export class ListPage implements OnInit {
 
     this.barcodeCtrl.scan(options).then(barcodeData => {
       this.scannedTrashData = barcodeData
-      // this.http.get(`http://pavoldrotar.com:5000/barcodes?barcode=${barcodeData}`)
-      // .subscribe(data => {
-      //   alert("PROBABLY HERE")
-      //   alert(JSON.stringify(data))
-      // })
+      this.http.get(`http://pavoldrotar.com:5000/barcodes?barcode=${barcodeData}`)
+      .subscribe(data => {
+        alert("PROBABLY HERE")
+        alert(JSON.stringify(data))
+      })
       this.checkMatch();
     }).catch(err => {
       console.log('Error', err);

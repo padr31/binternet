@@ -7,10 +7,12 @@ import { RouterModule } from '@angular/router';
 import { ListPage } from './list.page';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
     CommonModule,
+    HttpClientModule,
     FormsModule,
     IonicModule,
     RouterModule.forChild([
