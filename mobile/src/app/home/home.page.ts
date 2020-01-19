@@ -168,7 +168,7 @@ export class HomePage {
            });
         });
       }).catch(err => {
-        alert(err.error)
+        // alert(err.error)
       })
     }, 5000);
   }
@@ -222,7 +222,7 @@ export class HomePage {
         })
       }
     }).catch(err => {
-      alert(err.error)
+      // alert(err.error)
     })
   }
 }

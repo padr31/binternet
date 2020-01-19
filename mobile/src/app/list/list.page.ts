@@ -63,17 +63,17 @@ export class ListPage implements OnInit {
 
     this.barcodeCtrl.scan(options).then(barcodeData => {
       this.scannedTrashData = barcodeData
-      alert(JSON.stringify(barcodeData))
+      // alert(JSON.stringify(barcodeData))
       this.http.get(`http://pavoldrotar.com:5000/barcodes?barcode=${barcodeData.text}`, {}, {})
       .then(data => {
         this.scannedTrashData = JSON.parse(data.data)[0].type
         this.checkMatch()
       })
       .catch(err => {
-        alert(err.error)
+        // alert(err.error)
       })
     }).catch(err => {
-        alert(err.error)
+        // alert(err.error)
     });
   }
 
