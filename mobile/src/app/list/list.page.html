@@ -9,17 +9,17 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
- <ion-button fill="solid" expand="block" class="buttons" color="dark" fill="outline" shape="round" (click)="scanBin()"> Scan bin </ion-button>
- <ion-button fill="solid" expand="block" class="buttons" color="dark" fill="outline" shape="round" (click)="scanTrash()"> Scan trash </ion-button>
-   
+<ion-content id="wrapper">
+ <ion-button fill="solid" expand="block" class="buttons" color="dark" fill="outline" shape="round" (click)="scanBin()" id="scanBin">
+   <img src="assets/icon/trash_can.png" alt="">
+  </ion-button>
+ <ion-button fill="solid" expand="block" class="buttons" color="dark" fill="outline" shape="round" (click)="scanTrash()" id="scanTrash">
+   <img src="assets/icon/garbage.png" alt=" ">
+ </ion-button>
+
   <!--
     <div *ngIf="selectedItem" padding>
       You navigated here from <b>{{selectedItem.title }}</b>
     </div>
   -->
-
-  <div *ngIf="scannedData">
-    You scanned {{scannedData.text}}
-  </div>
 </ion-content>

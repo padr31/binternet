@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 //import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
-import { HttpClient } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http/ngx';
 
 import Swal from 'sweetalert2'
 
@@ -33,7 +33,7 @@ export class ListPage implements OnInit {
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
     public barcodeCtrl: BarcodeScanner,
-    public http: HttpClient
+    private http: HTTP
    // private qrScanner: QRScanner
   ) {
     for (let i = 1; i < 11; i++) {
@@ -43,15 +43,13 @@ export class ListPage implements OnInit {
         icon: this.icons[Math.floor(Math.random() * this.icons.length)]
       });
     }
-
-    this.http.get('http://pavoldrotar.com:5000/barcodes').subscribe(data => alert(JSON.stringify(data)))
   }
 
   ngOnInit() {
 
   }
 
-  scanTrash() {
+  scanTrash = () => {
     const options: BarcodeScannerOptions = {
       preferFrontCamera: false,
       showFlipCameraButton: true,
@@ -65,18 +63,21 @@ export class ListPage implements OnInit {
 
     this.barcodeCtrl.scan(options).then(barcodeData => {
       this.scannedTrashData = barcodeData
-      this.http.get(`http://pavoldrotar.com:5000/barcodes?barcode=${barcodeData}`)
-      .subscribe(data => {
-        alert("PROBABLY HERE")
-        alert(JSON.stringify(data))
+      alert(JSON.stringify(barcodeData))
+      this.http.get(`http://pavoldrotar.com:5000/barcodes?barcode=${barcodeData.text}`, {}, {})
+      .then(data => {
+        this.scannedTrashData = JSON.parse(data.data)[0].type
+        this.checkMatch()
       })
-      this.checkMatch();
+      .catch(err => {
+        alert(err.error)
+      })
     }).catch(err => {
-      console.log('Error', err);
+        alert(err.error)
     });
   }
 
-  scanBin() {
+  scanBin = () => {
     const options: BarcodeScannerOptions = {
       preferFrontCamera: false,
       showFlipCameraButton: true,
@@ -89,7 +90,7 @@ export class ListPage implements OnInit {
     };
 
     this.barcodeCtrl.scan(options).then(barcodeData => {
-      this.scannedData = barcodeData
+      this.scannedData = barcodeData.text
       this.checkMatch();
     }).catch(err => {
       console.log('Error', err);
@@ -125,9 +126,9 @@ export class ListPage implements OnInit {
     if(!this.scannedData || !this.scannedTrashData) return;
 
     Swal.fire({
-      title: 'Done!',
-      text: `You scanned ${this.scannedData}`,
-      icon: 'error'
+      title: this.scannedTrashData === this.scannedData ? 'Correct!' : 'Incorrect bin!',
+      text: this.scannedTrashData === this.scannedData ? `You've each points` : `You wanted to toss ${this.scannedTrashData} into ${this.scannedData}`,
+      icon: this.scannedTrashData === this.scannedData ? 'success' : 'error'
     })
   }
 

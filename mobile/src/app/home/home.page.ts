@@ -16,6 +16,7 @@ import {
   CameraPosition,
   HtmlInfoWindow
 } from "@ionic-native/google-maps";
+import { HTTP } from '@ionic-native/http/ngx';
 
 @Component({
   selector: 'app-home',
@@ -41,6 +42,7 @@ export class HomePage {
     // private geolocation: Geolocation,
     private platform: Platform,
     public loadingController: LoadingController,
+    private http: HTTP
     // private nativeGeocoder: NativeGeocoder,
   ) {
   }
@@ -114,30 +116,35 @@ export class HomePage {
     frame.innerHTML = [
       '<h3>Amazing trash!</h3>',
     ].join("");
-   
+
     htmlInfoWindow.setContent(frame, {width: "250px", height: "100px"});
-    
-    arr.map(marker => {
-      const { lat, lng } = marker;
-      let myMarker: Marker  = this.map.addMarkerSync({
-        //title: 'This is an amazing trash',
-        position: {
-          lat,
-          lng
-        },
-        icon: {
-          url: 'assets/icon/trash.png',
-          size: {
-            width: 32,
-            height: 32
+
+    this.http.get('http://pavoldrotar.com:5000/locations', {}, {})
+    .then(data => {
+      JSON.parse(data.data).map(marker => {
+        const { lat, lng } = marker;
+        let myMarker: Marker  = this.map.addMarkerSync({
+          //title: 'This is an amazing trash',
+          position: {
+            lat,
+            lng
+          },
+          icon: {
+            url: 'assets/icon/trash.png',
+            size: {
+              width: 32,
+              height: 32
+            }
           }
-        }
+        });
+         myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+           htmlInfoWindow.open(myMarker);
+         });
+      
       });
-       myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-         htmlInfoWindow.open(myMarker);
-       });
-    
-    });
+    }).catch(err => {
+      alert(err.error)
+    })
   }
 
   // addMarker() {
