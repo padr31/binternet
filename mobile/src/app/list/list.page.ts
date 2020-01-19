@@ -125,9 +125,13 @@ export class ListPage implements OnInit {
   checkMatch = () => {
     if(!this.scannedData || !this.scannedTrashData) return;
 
+    if(this.scannedTrashData === this.scannedData) {
+      window.localStorage.setItem('coinCount', (parseInt(window.localStorage.getItem('coinCount')) + 5).toString())
+    }
+
     Swal.fire({
       title: this.scannedTrashData === this.scannedData ? 'Correct!' : 'Incorrect bin!',
-      text: this.scannedTrashData === this.scannedData ? `You've each points` : `You wanted to toss ${this.scannedTrashData} into ${this.scannedData}`,
+      text: this.scannedTrashData === this.scannedData ? `You've earn 5 points` : `You wanted to toss ${this.scannedTrashData} into ${this.scannedData}`,
       icon: this.scannedTrashData === this.scannedData ? 'success' : 'error'
     })
   }

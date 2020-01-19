@@ -119,6 +119,27 @@ export class HomePage {
 
     htmlInfoWindow.setContent(frame, {width: "250px", height: "100px"});
 
+    // arr.map(marker => {
+    //   const { lat, lng } = marker;
+    //   let myMarker: Marker  = this.map.addMarkerSync({
+    //     //title: 'This is an amazing trash',
+    //     position: {
+    //       lat,
+    //       lng
+    //     },
+    //     icon: {
+    //       url: 'assets/icon/trash.png',
+    //       size: {
+    //         width: 32,
+    //         height: 32
+    //       }
+    //     }
+    //   });
+    //    myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+    //      htmlInfoWindow.open(myMarker);
+    //    });
+    // });
+
     this.http.get('http://pavoldrotar.com:5000/locations', {}, {})
     .then(data => {
       JSON.parse(data.data).map(marker => {
@@ -140,7 +161,6 @@ export class HomePage {
          myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
            htmlInfoWindow.open(myMarker);
          });
-      
       });
     }).catch(err => {
       alert(err.error)
