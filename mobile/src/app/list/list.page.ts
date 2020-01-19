@@ -127,7 +127,8 @@ export class ListPage implements OnInit {
 
     let ls = window.localStorage;
     if(this.scannedTrashData === this.scannedData) {
-      ls.setItem('coinCount', (parseInt(ls.getItem('coinCount')) + 5).toString())
+      let newScore = parseInt(ls.getItem('coinCount')) + 5
+      ls.setItem('coinCount', newScore.toString())
     }
 
     Swal.fire({
