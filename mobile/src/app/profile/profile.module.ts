@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+
 import { RouterModule } from '@angular/router';
 
-import { ListPage } from './list.page';
+import { IonicModule } from '@ionic/angular';
 
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+
+import { ProfilePage } from './profile.page';
 
 @NgModule({
   imports: [
@@ -16,13 +17,10 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
     RouterModule.forChild([
       {
         path: '',
-        component: ListPage
+        component: ProfilePage
       }
     ])
   ],
-  declarations: [ListPage],
-  providers: [
-    BarcodeScanner
-  ]
+  declarations: [ProfilePage]
 })
-export class ListPageModule {}
+export class ProfilePageModule {}

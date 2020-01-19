@@ -117,7 +117,7 @@ export class HomePage {
    
     htmlInfoWindow.setContent(frame, {width: "250px", height: "100px"});
     
-    arr.map(marker => {
+    [].map(marker => {
       const { lat, lng } = marker;
       let myMarker: Marker  = this.map.addMarkerSync({
         //title: 'This is an amazing trash',
