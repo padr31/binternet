@@ -125,8 +125,9 @@ export class ListPage implements OnInit {
   checkMatch = () => {
     if(!this.scannedData || !this.scannedTrashData) return;
 
+    let ls = window.localStorage;
     if(this.scannedTrashData === this.scannedData) {
-      window.localStorage.setItem('coinCount', (parseInt(window.localStorage.getItem('coinCount')) + 5).toString())
+      ls.setItem('coinCount', (parseInt(ls.getItem('coinCount')) + 5).toString())
     }
 
     Swal.fire({

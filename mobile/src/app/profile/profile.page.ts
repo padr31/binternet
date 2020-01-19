@@ -13,9 +13,13 @@ export class ProfilePage implements OnInit {
 
   constructor() {
     this.ls = window.localStorage;
+    alert(this.ls.getItem("coinCount"))
+    alert(parseInt(this.ls.getItem('coinCount')) + 5);
     if(!this.ls.getItem("coinCount")) {
       this.coinCount = 0;
       this.ls.setItem('coincount', "0");
+    } else {
+      this.coinCount = parseInt(this.ls.getItem('coinCount'))
     }
   }
 
