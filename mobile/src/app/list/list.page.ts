@@ -133,7 +133,7 @@ export class ListPage implements OnInit {
 
     Swal.fire({
       title: this.scannedTrashData === this.scannedData ? 'Correct!' : 'Incorrect bin!',
-      text: this.scannedTrashData === this.scannedData ? `You've earn 5 points` : `You wanted to toss ${this.scannedTrashData} into ${this.scannedData}`,
+      text: this.scannedTrashData === this.scannedData ? `You've earned 5 points` : `You wanted to toss ${this.scannedTrashData} into ${this.scannedData}`,
       icon: this.scannedTrashData === this.scannedData ? 'success' : 'error'
     })
   }
