@@ -142,6 +142,7 @@ export class HomePage {
 
     this.http.get('http://pavoldrotar.com:5000/locations', {}, {})
     .then(data => {
+
       JSON.parse(data.data).map(marker => {
         const { lat, lng } = marker;
         let myMarker: Marker  = this.map.addMarkerSync({
@@ -159,7 +160,7 @@ export class HomePage {
           }
         });
          myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-           htmlInfoWindow.open(myMarker);
+          //  htmlInfoWindow.open(myMarker);
          });
       });
     }).catch(err => {
@@ -191,7 +192,36 @@ export class HomePage {
     // ls.setItem('markers', JSON.stringify(arr))
     // alert(ls.getItem('markers'))
   // }
+
+  getAndDrawLines() {
+    this.http.get('http://pavoldrotar.com:5000/fullLocations', {}, {})
+    .then(data => {
+      let points = JSON.parse(data.data).sort((a,b)=>a.lng-b.lng);
+
+      for(let i=0;i<points.length-1;i++) {
+        let {lat,lng} = points[i];
+        let {lat:dlat, lng:dlng} = points[i+1];
+        this.http.get(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&key=AIzaSyDFy_yWAiJHKsmin04CnGvu_y_msrArVwY&origin=${lat},${lng}&destination=${dlat},${dlng}`, {}, {})
+        .then(data2 => {
+          let decodedPoints = GoogleMaps.getPlugin().geometry.encoding.decodePath(
+          // not sure if this is the exact path to the overview_polyline attribute...
+          JSON.parse(data2.data).routes[0].overview_polyline.points
+          );
+
+          this.map.addPolyline({
+            points : decodedPoints,
+            color : '#AA00FF',
+            width: 2,
+            geodesic : false
+          })
+        })
+      }
+    }).catch(err => {
+      alert(err.error)
+    })
+  }
 }
+
   // getGeolocation(){
   //   this.geolocation.getCurrentPosition().then((resp) => {
   //     this.geoLatitude = resp.coords.latitude;
