@@ -97,7 +97,7 @@ export class HomePage {
       // Animate the map camera to the location
       this.map.animateCamera({
         target: location.latLng,
-        zoom: 18,
+        zoom: 16,
         duration: 1200,
       });
 
@@ -140,32 +140,37 @@ export class HomePage {
     //    });
     // });
 
-    this.http.get('http://pavoldrotar.com:5000/locations', {}, {})
-    .then(data => {
+    setTimeout(() => {
+      this.http.get('http://pavoldrotar.com:5000/fullLocations', {}, {})
+      .then(data => {
+        this.map.clear();
 
-      JSON.parse(data.data).map(marker => {
-        const { lat, lng } = marker;
-        let myMarker: Marker  = this.map.addMarkerSync({
-          //title: 'This is an amazing trash',
-          position: {
-            lat,
-            lng
-          },
-          icon: {
-            url: 'assets/icon/trash.png',
-            size: {
-              width: 32,
-              height: 32
+        this.getLocation();
+        
+        JSON.parse(data.data).map(marker => {
+          const { lat, lng } = marker;
+          let myMarker: Marker  = this.map.addMarkerSync({
+            //title: 'This is an amazing trash',
+            position: {
+              lat,
+              lng
+            },
+            icon: {
+              url: 'assets/icon/trash.png',
+              size: {
+                width: 32,
+                height: 32
+              }
             }
-          }
+          });
+           myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+            //  htmlInfoWindow.open(myMarker);
+           });
         });
-         myMarker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-          //  htmlInfoWindow.open(myMarker);
-         });
-      });
-    }).catch(err => {
-      alert(err.error)
-    })
+      }).catch(err => {
+        alert(err.error)
+      })
+    }, 5000);
   }
 
   // addMarker() {
